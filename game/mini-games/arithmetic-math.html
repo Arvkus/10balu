@@ -1,0 +1,176 @@
+
+<style>
+        #mini{
+            display: flex;
+        }
+    
+        #mini .mini-info{
+            flex: 0 200px;
+            margin: 10px;
+        }
+    
+        #mini .mini-images{
+            border-right: 1px solid black;
+            flex: 1;
+            display: flex;
+            flex-flow: column;
+        }
+
+        #mini .mini-images > h1{
+            flex: 1;
+        }
+
+        #mini .mini-images > h2{
+            text-align: center;
+            color: rgba(192, 192, 192, 0.5);
+            font-size: 100%;
+        }
+
+        #mini h1{
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+    
+    
+    <script>
+    function mini(){
+        let end_game = false;
+        let steps = 0; // $("#mini #steps").text("Paspaudimai: " + steps);
+        let time = 1;
+        let complexity =  5;  // 2, 4, 8, 16
+    
+        // kiek tasku turi, formule
+        function calculate_points(complexity, steps, time){
+            let points = Math.floor( complexity*60 - (time*2 + steps*30) );
+            return points > 0? points: 0;
+        }
+    
+        //----- Zaidomo kodas -----//
+
+        let handler = function(event){
+            if(event.key == "Backspace" || event.key == "Delete"){
+                answer = answer.length > 1? answer.substr(0,answer.length - 1): "";
+            }else if(!isNaN(parseInt(event.key))){ // skaicius
+                if(answer.length < 3) answer += event.key;
+            }else if(event.key == "Enter"){
+                check_answer();
+            }
+
+            $("#mini #ivestis").text(answer);
+            console.log(answer);
+            //console.log("Pressed: ", event.key);
+        }
+
+        let i = 0;
+        let generate_problem = function(){
+            i++;
+            if(i > complexity){
+                end_game = true;
+                game.end_game(calculate_points(complexity, steps, time));
+                event.unbind("keydown",handler);
+                return;
+            }
+
+            let x,y,z,a;
+            let n = Math.round(Math.random() * 100)%4;
+					
+            switch(n){
+                case 0: z = "+"; 
+                    x = Math.round(Math.random() * 100) ;
+                    if(x == 100){ y = 0;}else{y = Math.round(Math.random() * 100) %(100 - x);};
+                    a = x + y;
+                    break;
+                case 1: z = "-";
+                    x = Math.round(Math.random() * 100) ;
+                    if(x == 0){ y = 0; }else{ y = Math.round(Math.random() * 100) %x + 1; };
+                    a = x - y;
+                    break;
+                case 2: z = "᛫"; 
+                    x = Math.round(Math.random() * 100)%10 + 1;
+                    y = Math.round(Math.random() * 100)%10 + 1;
+                    a = x * y;
+                    break;
+                case 3: z = ":"; 
+                    y = Math.round(Math.random() * 100)%10 + 1;
+                    x = (Math.round(Math.random() * 100)%10 + 1) * y;
+                    a = x / y;
+                    break;
+            };
+            $("#mini #narys-1").text(x);
+            $("#mini #narys-2").text(y);
+            $("#mini #zenklas").text(z);
+            correct = a;
+            answer = "";
+            $("#mini #ivestis").text(answer);
+        }
+
+        let check_answer = function(){
+            if(parseInt(answer) == correct){
+                console.log("Correct")
+                $(".mini-images").css("background-color","green");
+                $(".mini-images").animate({"background-color": "white"},600);
+                generate_problem();
+            }else{
+                $(".mini-images").css("background-color","red");
+                $(".mini-images").animate({"background-color": "white"},600);
+                steps++;
+                $("#steps").text("Bandymai: " + steps);
+            }
+        }
+
+
+
+        let answer = "";
+        let correct = 0;
+        let event = $("body").keydown(handler);
+        generate_problem();
+
+    
+        //-------------------------//
+    
+        $("#mini #end-game").on("click",function(){
+            console.log("click")
+            end_game = true;
+            game.end_game(0);
+            event.unbind("keydown", handler);
+        })
+    
+        function timer(t){
+            time = t;
+            console.log(t);
+            $("#mini #timer").text("Laikas: " + 
+            Math.floor(t/600) + 
+            Math.floor(t/60) + 
+            ":" + 
+            Math.floor(t%60/10) + 
+            Math.floor(t%60%10));
+    
+            $("#mini #points").text("Taškai: " + calculate_points(complexity, steps, time))
+    
+            if(end_game) return;
+            sleep(1000).then(() => {timer(t+1)});
+        }
+        timer(0);
+    }
+    mini();
+    </script>
+    
+    <main id="mini">
+        <div class="mini-images">
+            <h1><span id="narys-1">5</span> <span id="zenklas">+</span> <span id="narys-2">6</span> = <span id="ivestis">56</span> </h1>
+            <h2>Backspace - ištrinti atsakymą</h2>
+            <h2>Enter - patvirtinti atsakymą</h2>
+        </div>
+    
+        <div class="mini-info">
+            <div id="timer" class="alert alert-info" role="alert">Laikas: 00:00</div>
+            <div id="steps" class="alert alert-warning" role="alert">Bandymai: 0</div>
+            <div id="points" class="alert alert-success" role="alert">Taškai: 0</div>
+            <div class="alert alert-primary" role="alert">Atlikti aritmetinius veiksmus</div>
+            <!--<div>Paveikslėlis</div> -->
+            <button id="end-game" style="width: 100%"  type="button" class="btn btn-danger">Išeiti</button>
+        </div>
+    </main>
+    
+    

@@ -1,0 +1,71 @@
+html, body {
+    margin: 0px;
+    padding: 0px;
+
+    width: 100%;
+    height: 100%;
+    border: 0;
+    overflow: hidden;
+    display: block; 
+}
+
+#mini-game{
+    display: none;
+    position: absolute;
+    left: calc(50% - 400px);
+    width: 800px;
+    
+    margin: 30px;
+    background: white;
+    border: 1px solid black;
+}
+
+main #interface #black-screen{
+    position: absolute;
+    background-color: black;
+    opacity: 0;
+    width:100%;
+    height: 100%;
+}
+
+main #interface p {
+    right: 0px;
+    padding: 10px;
+    position: absolute;
+    background-color: black;
+    border-bottom-left-radius: 20px; 
+    color: white;
+    white-space: nowrap;
+}
+/* ADMIN */
+#admin{
+    display: none;
+    position: absolute;
+    background-color: white;
+    width: 500px;
+    height: 100%;
+}
+
+.admin-tools{
+   padding: 5px;
+}
+
+.admin-tools textarea{
+    width: 100%;
+ }
+
+
+#sprite_selection{
+    width: calc(914px/2);
+    height: calc(936px/2);
+}
+
+#sprite_selection_box{
+    position: relative;
+    top: 35px;
+    left: 0px;
+    outline: red 2px solid;
+    width: 35px;
+    height: 35px;
+}
+

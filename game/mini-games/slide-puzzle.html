@@ -1,0 +1,256 @@
+ <!-- ----------------------------------------------------------------------------- -->
+<style>    
+    #mini{
+        display: flex;
+    }
+
+
+    #mini .mini-info{
+        flex: 1;
+        margin: 10px;
+    }
+
+    #mini .mini-images{
+        border-right: 1px solid black;
+        flex: 1;
+    }
+
+    #mini .mini-tile{
+        position: absolute;
+        border: 1px solid black;
+        background-image: url(./game/assets/images/img-slide/1.jpg);
+        background-size: 600px 600px; 
+    }
+
+    #mini .mini-info > *{
+        margin-top: 5px;
+        padding: 5px;
+    }
+</style>
+<!-- ----------------------------------------------------------------------------- -->
+<script>
+
+function mini(){
+    let end_game = false;
+    let steps = 0;
+    let time = 1;
+
+    let complexity =  3;  // 2, 4, 8, 16
+    let image_size =  600;
+    let gap_size   =  4;
+    let offset     =  9;
+
+    let tile_size = image_size/complexity;
+    let data = [];
+
+    function get_element_data(element){ // element = jquery
+        for(let x = 0; x < complexity; x++){
+            for(let y = 0; y < complexity; y++){
+                if(data[x][y] && data[x][y].element[0] == element){ 
+                    return data[x][y]; // surasti  elemento klase pagal elementa
+                }
+            }
+        }
+    }
+
+    function tiles_correct(){
+        let n = complexity*complexity-1;
+        let i = 0;
+
+        for(let x = 0; x < complexity; x++){
+            for(let y = 0; y < complexity; y++){
+                if(data[x][y]){
+                    if(data[x][y].position.x == data[x][y].correct.x 
+                    && data[x][y].position.y == data[x][y].correct.y){
+                        i++;
+                    }
+                }
+            }
+        }
+        return n==i
+    }
+
+    function shufle(){
+        let rand = []
+        for(let x = 0; x < complexity; x++){
+            rand[x] = [];
+            for(let y = 0; y < complexity; y++){
+                rand[x][y] = new vector(Math.floor(Math.random()*complexity),Math.floor(Math.random()*complexity))
+            }
+        }
+
+        
+        for(let x = 0; x < complexity; x++){
+            for(let y = 0; y < complexity; y++){
+
+                let x2 = rand[x][y].x;
+                let y2 = rand[x][y].y;
+
+                if(data[x][y] && data[x2][y2]){ // kad neimtu tuscio lauko
+                    let swap = data[x][y];
+
+                    data[x ][y ].position = rand[x][y];
+                    data[x2][y2].position = new vector(x,y);
+
+                    data[x ][y ] = data[x2][y2]
+                    data[x2][y2] = swap
+
+                    data[x ][y ].set_position();
+                    data[x2][y2].set_position();
+                }
+            }
+        }
+    }
+
+    class tile{
+        constructor(x,y,location){
+            this.element = $(location);
+            this.position = new vector(x,y);
+            this.correct = new vector(x,y);
+        };
+
+        set_position(){ // nustatyti pozicija lenteleje
+            this.element.animate({
+                top:  (offset+(tile_size + gap_size)*this.position.y) + "px",
+                left: (offset+(tile_size + gap_size)*this.position.x) + "px",
+            })
+        };
+
+        set_image(){
+            this.element.animate({
+                "background-position-x": (-this.position.x*tile_size) + "px",
+                "background-position-y": (-this.position.y*tile_size) + "px",
+            });
+        };
+    }
+
+    // kiek tasku turi, formule
+    function calculate_points(complexity, steps, time){
+        let points = Math.floor( complexity*2000 - (time*.5 + steps*5) );
+        return points > 0? points: 0;
+    }
+
+    // sukurti plyteliu matrica
+    for(let x = 0; x < complexity; x++){
+        data[x] = [];
+        for(let y = 0; y < complexity; y++){
+            data[x][y] = false;
+        }
+    }
+
+    // sukurti plyteles
+    for(let x = 0; x < complexity; x++){
+        for(let y = 0; y < complexity; y++){
+            if(x+1 == complexity && y+1 == complexity){break;} // jei paskutinis - nekurti
+
+            $(".mini-images").append("<div class='mini-tile'></div>")
+
+            data[x][y] = new tile(x,y, $(".mini-images .mini-tile:last-child") );
+            data[x][y].set_position();
+            data[x][y].set_image();
+        }
+    }
+
+    // plytelem ir jos konteineriui suteikti dydi
+    $(".mini-images").css({
+        flex: "0 " + (offset*2 - gap_size + (gap_size+tile_size)*complexity) + "px",
+        height: (offset*2 - gap_size + (gap_size+tile_size)*complexity) + "px",
+    })
+
+    $(".mini-images .mini-tile").css({
+        width:  tile_size + "px",
+        height: tile_size + "px",
+    })
+
+    //ismaisyti
+    shufle();
+
+    // paspaudimas ant plyteles
+    $(".mini-images .mini-tile").on("click",function(event){
+        let e = get_element_data(event.currentTarget);
+        let new_pos = null;
+ 
+        if(data[e.position.x+1]){
+            if(data[e.position.x+1][e.position.y] == false){
+                new_pos = new vector(e.position.x+1, e.position.y);
+            }
+        }
+
+        if(data[e.position.x-1]){
+            if(data[e.position.x-1][e.position.y] == false){
+                new_pos = new vector(e.position.x-1, e.position.y);
+            }
+        }
+
+        if(data[e.position.x][e.position.y-1] == false){
+            new_pos = new vector(e.position.x, e.position.y-1);
+        }
+
+        if(data[e.position.x][e.position.y+1] == false){
+            new_pos = new vector(e.position.x, e.position.y+1);
+        }
+        
+        // jei salia yra tuscias langas
+        if(new_pos){
+            steps++; $("#mini #steps").text("Paspaudimai: " + steps);
+
+            console.log(new_pos.point)
+            let old_pos = e.position;
+
+            data[old_pos.x][old_pos.y].position = new_pos; // pakeisti elemento koordinates
+            data[new_pos.x][new_pos.y] = data[old_pos.x][old_pos.y]; // swap
+            data[old_pos.x][old_pos.y] = false; // remove
+
+            data[new_pos.x][new_pos.y].set_position();
+
+            if(tiles_correct()){
+                let p = calculate_points(complexity, steps, time);
+                end_game = true;
+                game.end_game(p);
+            }
+        }
+    })
+
+    
+    $("#mini #end-game").on("click",function(){
+        console.log("click")
+        end_game = true;
+        game.end_game(0);
+    })
+
+    function timer(t){
+        time = t;
+
+        $("#mini #timer").text("Laikas: " + 
+        Math.floor(t/600) + 
+        Math.floor(t/60) + 
+        ":" + 
+        Math.floor(t%60/10) + 
+        Math.floor(t%60%10));
+
+        $("#mini #points").text("Taškai: " + calculate_points(complexity, steps, time))
+
+        if(end_game) return;
+        sleep(1000).then(() => {timer(t+1)});
+    }
+    timer(0);
+    $("#mini .mini-tile").css({"background-image":"url(./game/assets/images/img-slide/"+Math.floor(Math.random() * 6)+".jpg)"});
+}
+mini();
+</script>
+<!-- ----------------------------------------------------------------------------- -->
+<main id="mini">
+    <div class="mini-images">
+
+    </div>
+
+    <div class="mini-info">
+        <div id="timer" class="alert alert-info" role="alert">Laikas: 00:00</div>
+        <div id="steps" class="alert alert-warning" role="alert">Paspaudimai: 0</div>
+        <div id="points" class="alert alert-success" role="alert">Taškai: 0</div>
+        <div class="alert alert-primary" role="alert">Sudėlioti plyteles taisyklingą tvarka</div>
+        <!--<div>Paveikslėlis</div> -->
+        <button id="end-game" style="width: 100%"  type="button" class="btn btn-danger">Išeiti</button>
+    </div>
+</main>
+<!-- ----------------------------------------------------------------------------- -->

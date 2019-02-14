@@ -1,0 +1,227 @@
+<!--
+    #mini ilgis neturetu buti didesnis nei 800px, aukstis - 600px
+    Visas JavaScript turi buti mini() funkcijoje
+    Gali buti itrauktos papildomos bibliotekos (JQuery, Bootstrap, PixiJS...)
+    Visos klases ir ID turi prasideti su "mini-" (mini-class, mini-id)
+-->
+
+
+
+<style>
+    #mini{
+        display: flex;
+    }
+
+    #mini .mini-info{
+        flex: 0 200px;
+        margin: 10px;
+    }
+
+    #mini .mini-images{
+        border-right: 1px solid black;
+        flex: 1;
+    }
+
+    #mini h1{
+        padding: 10px;
+        text-align: center;
+    }
+
+    #mini .mini-img-container{
+        width: 100%;
+        height: 256px;
+    }
+    #mini img{
+         display: block; 
+         margin: 5px auto 5px;
+         height: 100%;
+    }
+</style>
+
+
+<script>
+function mini(){
+    let end_game = false;
+    let steps = 0; // $("#mini #steps").text("Paspaudimai: " + steps);
+    let time = 1;
+    let complexity =  10;  // 2, 4, 8, 16
+
+
+    // kiek tasku turi, formule
+    function calculate_points(complexity, steps, time){
+        let points = Math.floor( complexity*60 - (time*2 + steps*30) );
+        return points > 0? points: 0;
+    }
+
+    //----- Zaidomo kodas -----//
+
+    let words = [
+         "acorn",
+         "apple",
+         "backpack",
+         "ball",
+         "barn",
+         "basket",
+         "basketball",
+         "bear",
+         "bed",
+         "bee",
+         "black",
+         "blue",
+         "boat",
+         "book",
+         "brown",
+         "bus",
+         "cake",
+         "california",
+         "camera",
+         "candy",
+         "car",
+         "cat",
+         "chair",
+         "cloud",
+         "cow",
+         "dog",
+         "doll",
+         "donkey",
+         "duck",
+         "elephant",
+         "extinguisher",
+         "fire",
+         "firefighter",
+         "fish",
+         "four",
+         "fox",
+         "giraffe",
+         "globe",
+         "goat",
+         "green",
+         "hat",
+         "horse",
+         "hose",
+         "house",
+         "hydrant",
+         "ladder",
+         "leaf",
+         "leaves",
+         "markers",
+         "monkey",
+         "moose",
+         "one",
+         "orange",
+         "orchard",
+         "oregon",
+         "panda",
+         "people",
+         "pie",
+         "pig",
+         "pink",
+         "plane",
+         "pumpkin",
+         "purple",
+         "rain",
+         "rake",
+         "red",
+         "road",
+         "rollercoaster",
+         "room",
+         "saw",
+         "scarecrow",
+         "school",
+         "seed",
+         "shell",
+         "snow",
+         "soccerball",
+         "stars",
+         "sun",
+         "taxi",
+         "teacher",
+         "three",
+         "train",
+         "tree",
+         "truck",
+         "two",
+         "white",
+         "yellow"
+    ];
+
+    let word = null; // !
+    let letter = null; // !
+
+    let select_word = function(){
+        word = words[Math.floor(Math.random() * words.length)];
+        let num = Math.floor(Math.random() * word.length);
+        letter = word[num];
+        let secret = word.substr(0,num) + "_" + word.substr(num+1);
+
+        $("#mini img").prop("src","game/assets/images/img-english/" + word + ".jpg");
+        $("#mini h1").text(secret);
+    }
+
+
+    let i = 0;
+    let event = $("body").keypress(function(event){
+        if(i < complexity){
+            if(event.key == letter){
+                select_word();
+                i++;
+            }else{
+                steps++;
+                $("#steps").text("Bandymai: " + steps);
+            }
+        }else{
+            end_game = true;
+            game.end_game(calculate_points(complexity, steps, time));
+            $(this).unbind("keypress");
+        }
+        //console.log("Pressed: ", event.key);
+    })
+    select_word();
+
+    //-------------------------//
+
+    $("#mini #end-game").on("click",function(){
+        end_game = true;
+        game.end_game(0);
+        event.unbind("keypress");
+    })
+
+    function timer(t){
+        time = t;
+
+        $("#mini #timer").text("Laikas: " + 
+        Math.floor(t/600) + 
+        Math.floor(t/60) + 
+        ":" + 
+        Math.floor(t%60/10) + 
+        Math.floor(t%60%10));
+
+        $("#mini #points").text("Taškai: " + calculate_points(complexity, steps, time))
+
+        if(end_game) return;
+        sleep(1000).then(() => {timer(t+1)});
+    }
+    timer(0);
+}
+mini();
+</script>
+
+<main id="mini">
+    <div class="mini-images">
+        <div class="mini-img-container">
+            <img src="" alt="">
+        </div>
+        
+        <h1>SelectedW</h1>
+    </div>
+
+    <div class="mini-info">
+        <div id="timer" class="alert alert-info" role="alert">Laikas: 00:00</div>
+        <div id="steps" class="alert alert-warning" role="alert">Bandymai: 0</div>
+        <div id="points" class="alert alert-success" role="alert">Taškai: 0</div>
+        <div class="alert alert-primary" role="alert">Irašyti praleistą raidę</div>
+        <!--<div>Paveikslėlis</div> -->
+        <button id="end-game" style="width: 100%"  type="button" class="btn btn-danger">Išeiti</button>
+    </div>
+</main>
+

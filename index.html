@@ -1,0 +1,125 @@
+<!--
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+    <!-- PixiJs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.2/pixi.min.js"></script>
+
+    <!-- 10Balu -->
+    <link rel="stylesheet" href="style.css">
+
+    <script src="game/assets/libraries/vector.js"></script>
+    <script src="game/assets/libraries/game.js"></script>
+    <script src="game/assets/libraries/object.js"></script>
+
+    <script>
+        const sleep = (milliseconds) => {return new Promise(resolve => setTimeout(resolve, milliseconds))};
+
+        var script_path = function () {
+            let scripts = document.querySelectorAll( 'script[src]' );
+            let currentScript = scripts[ scripts.length - 1 ].src;
+            let currentScriptChunks = currentScript.split( '/' );
+            let currentScriptFile = currentScriptChunks[ currentScriptChunks.length - 1 ];
+
+            return currentScript.replace( currentScriptFile, '' );
+        }
+        var root_path = script_path();
+    </script>
+</head>
+
+<body>
+    <main>
+        <div id="admin">
+            <div class="admin-tools">
+                <p>
+                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#tiles" aria-expanded="false" aria-controls="collapseExample">
+                        Tiles
+                    </button>
+
+                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#save" aria-expanded="false" aria-controls="collapseExample" id="save-btn">
+                        Save
+                    </button>
+
+                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#object" aria-expanded="false" aria-controls="collapseExample" id="save-btn">
+                        Object
+                    </button>
+                </p>
+
+                <div class="collapse" id="tiles">
+                    <button class="btn btn-primary" type="button" id='None'> None </button>
+                    <button class="btn btn-success" type="button" id='Create'> Create </button>
+                    <button class="btn btn-danger"  type="button" id='Delete'> Delete </button>
+
+                    <button class="btn btn-secondary"  type="button" id='z0'> z0 </button>
+                    <button class="btn btn-secondary"  type="button" id='z1'> z1 </button>
+                    <button class="btn btn-secondary"  type="button" id='z2'> z2 </button>
+
+                    <div class="card card-body">
+                        <div id='sprite_selection_box'></div>
+                        <img id='sprite_selection' src="game/assets/images/tile_sheet.png" alt="">
+                    </div>
+                </div>
+
+                <div class="collapse" id="save">
+                    <textarea name="" id="" cols="30" rows="10"></textarea>
+                </div>
+
+                <div class="collapse" id="object">
+                    objektai:
+                </div>
+
+            </div>
+
+            <!--  -->
+        </div>
+        <div id="interface">
+            <div id="black-screen"></div>
+            <p id="points"> Taškai: 0 </p>
+        </div>
+
+        <div id="mini-game"></div>
+        <div id="display"></div>
+
+        <script src="main.js"></script>
+    </main>
+
+    <script>
+        /*
+        js = {}
+
+        for(let y = 0; y < 13; y++){
+            for(let x = 0; x < 12; x++){
+                let str = "" + Math.floor(x/10) + x%10 + "_" + Math.floor(y/10) + y%10;
+                js[str] = {
+                    "frame": {"x":(x*72),"y":(y*72),"w":70,"h":70},
+                    //"rotated": false,
+                    //"trimmed": true
+                }
+            }
+        }
+
+        $("#json").text(JSON.stringify(js));
+        */
+    </script>
+
+</body>
+
+</html>
