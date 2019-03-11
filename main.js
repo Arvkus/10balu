@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------- //
+﻿// ---------------------------------------------------------------------- //
 let path = script_path();
 console.log("current:", ) // do not work localy
 
@@ -7,12 +7,7 @@ PIXI.loader.add("tiles", "game/assets/json/tile_sheet.json")
 
 PIXI.loader.load(main);
 
-function test_call(x){
-    console.log("Hello",x);
-}
-
-let g = eval("test_call('world')");
-
+console.log("Hello World");
 
 function main(){
     let tile_sheet = PIXI.loader.resources["tiles"].spritesheet;
