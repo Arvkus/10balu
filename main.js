@@ -72,6 +72,8 @@ function main(){
     //let reflect = (a - (2 * vector.dot(a,surface) * surface));
     
     world.app.ticker.add(function(delta) {
+        $("#fps").text("FPS: " + Math.floor(world.app.ticker.FPS));
+
         renderer.clear();
         //renderer.draw([new vector(0,0),new vector(game.tile_size,game.tile_size)])
         if(world.pause){return}
