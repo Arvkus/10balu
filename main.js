@@ -180,9 +180,10 @@ function main(){
                     }
                     if(tile.n=="00_05"){ // game
                         if(plr.keys[' '] == 1 && world.pause == false){
+                            let game_start_time = Date.now();
                             world.pause = true;
-                            console.log(tile.function)
                             eval(tile.function);
+                            console.log(tile.function + ": " +  (Date.now() - game_start_time ) / 1000)
                         }
                         return plr.velocity
                     }
