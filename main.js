@@ -1,11 +1,14 @@
 // ---------------------------------------------------------------------- //
 let path = script_path();
-console.log("current:", ) // do not work localy
+let game_load_time = Date.now();
+
 
 PIXI.loader.add("player1", "game/assets/json/p1_walk.json")
 PIXI.loader.add("tiles", "game/assets/json/tile_sheet.json")
 
 PIXI.loader.load(main);
+
+console.log("Load time: " +  (Date.now() - game_load_time ) / 1000);
 
 function test_call(x){
     console.log("Hello",x);
