@@ -1,11 +1,10 @@
 // ---------------------------------------------------------------------- //
 let path = script_path();
-let game_load_time = Date.now();
 
+let game_load_time = Date.now();
 
 PIXI.loader.add("player1", "game/assets/json/p1_walk.json")
 PIXI.loader.add("tiles", "game/assets/json/tile_sheet.json")
-
 PIXI.loader.load(main);
 
 console.log("Load time: " +  (Date.now() - game_load_time ) / 1000);
